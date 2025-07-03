@@ -42,7 +42,43 @@ def mod_inverse(e: int, phi: int) -> int:
         raise ArithmeticError("Обратного элемента не существует")
     return x % phi
 
+def generate_rsa_keys() -> Tuple[Tuple[int, int], Tuple[int, int]]:
 
+    p = int(input("Введите простое p: "))
+    q = int(input("Введите простое q: "))
+
+    if not is_prime(p) or not is_prime(q):
+        raise ValueError("p и q должны быть простыми числами")
+
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    print(f"[Keys] n = {n}, phi(n) = {phi}")
+
+    preferred = 65537
+    if preferred < phi and gcd(preferred, phi) == 1:
+        e = preferred
+    else:
+        e = next((i for i in range(2, phi) if gcd(i, phi) == 1), None)
+        if e is None:
+            raise RuntimeError("Не найдено подходящего e")
+
+    d = mod_inverse(e, phi)
+    print(f"[Keys] Вычислен d = {d}")
+
+    return (e, n), (d, n)
+
+
+def rsa_encrypt(m: int, pubkey: Tuple[int, int]) -> int:
+    e, n = pubkey
+    c = pow(m, e, n)
+    return c
+
+
+def rsa_decrypt(c: int, privkey: Tuple[int, int]) -> int:
+    d, n = privkey
+    m = pow(c, d, n)
+    print(f"[Decrypt] c^{d} mod {n} = {m}")
+    return m
 def main() -> None:
 
 
