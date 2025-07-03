@@ -79,6 +79,34 @@ def rsa_decrypt(c: int, privkey: Tuple[int, int]) -> int:
     m = pow(c, d, n)
     print(f"[Decrypt] c^{d} mod {n} = {m}")
     return m
+
+
+raise RuntimeError("Общие секреты не совпадают")
+
+def diffie_hellman_exchange() -> int:
+    p = int(input("Простой модуль p: "))
+    g = int(input("Генератор g: "))
+
+    if not is_prime(p):
+        raise ValueError("p должен быть простым")
+
+    a = int(input("Ваш секрет a: "))
+    b = int(input("Секрет партнера b: "))
+
+    A = pow(g, a, p)
+    B = pow(g, b, p)
+    print(f"[DH] A = g^a mod p = {A}")
+    print(f"[DH] B = g^b mod p = {B}")
+
+    s1 = pow(B, a, p)
+    s2 = pow(A, b, p)
+    print(f"[DH] s1 = B^a mod p = {s1}")
+    print(f"[DH] s2 = A^b mod p = {s2}")
+
+    if s1 != s2:
+        raise RuntimeError("Общие секреты не совпадают")
+    return s1
+
 def main() -> None:
 
 
